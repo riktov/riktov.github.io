@@ -1,58 +1,110 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>The Sierpinskinator</title>
+		<meta name="viewport" content="width=device-width">
+		<base href="/sierpinski/">
+        <style type="text/css">
+            canvas#sierpinski {
+                margin-top: 10px ;
+            }
 
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
+            #colorpicker_wrapper {
+				display:inline;
+            }
+            #mode_button {
+				width: 10em ;
+				float:left ;
+				margin-right: 10px ;
+            }
+            #control_panel {
+				/* height: 4em ; */
+/* 				border: solid 2px red ; */
+				padding: 5px ;
+				background-color: #c89f55 ;
+				border-radius:5px 
+            }
+			#shape_selectors {
+				margin-bottom:5px ;
+			}
+			h1 {
+				margin-bottom: 0 ;
+			}
 
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+			#color_controls_wrapper > div {
+				/* float: left ; */
+				/* display: block; */
+				height: 2em ;
+			}
+        </style>
 
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
-  <base href="/sierpinski/">
+		<script
+			  src="https://code.jquery.com/jquery-2.2.4.js"
+			  integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+			  crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.1/spectrum.min.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.1/spectrum.min.css">
 
-  <meta charset="UTF-8">
-  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+		<link id="shortcut_icon" type="image/x-icon" rel="shortcut icon" href="">
+    </head>
 
-  <!-- iOS meta tags & icons -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="sierpinski">
-  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+    <body onload="draw();" class="">
+        <h1>The Sierpinskinator</h1>
+        <div id="control_panel">
+			<div class="PlayControls">
+				<button type="button" id="random_states_button" onclick="randomizeStates();">Random States</button>
+				<button type="button" id="shuffle_colors_button" onclick="shuffleColors();">Shuffle Colors</button>
+				<button type="button" id="scale_up_button" onclick="scaleUp();">&#9650;</button>
+				<button type="button" id="scale_down_button" onclick="scaleDown();">&#9660;</button>
+			</div>
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
+			<div id="color_controls_wrapper">
+				<div id="shape_selectors">
+					Shape:
+					<input type="radio" name="shape" value="square" id="radio_square" onclick="draw();" checked="checked">&#9724;</input>
+					<input type="radio" name="shape" value="circle" id="radio_circle" onclick="draw();" />&#11044;
+					<input type="radio" name="shape" value="diamond" id="radio_diamond" onclick="draw();" />&#9670;
+				</div>
 
-  <title>sierpinski</title>
-  <link rel="manifest" href="manifest.json">
+				<div>
+					<button type="button" id="mode_button" onclick="onModeButtonClick()">Change Colors</button>				
+					<div id="colorpicker_wrapper" style="display: none;" hidden="">
+						<input id="colorpicker" style="display: none;">
+						<em id="basic-log"></em>
+						<button type="button" id="copy_button" onclick="onCopyColor();">Copy</button>
+						<button type="button" id="paste_button" onclick="onPasteColor();">Paste</button>
+					</div>
+				</div>
+			</div>
 
-  <script>
-    // The value below is injected by flutter build, do not touch.
-    const serviceWorkerVersion = "2906424945";
-  </script>
-  <!-- This script adds the flutter initialization JS code -->
-  <script src="flutter.js" defer></script>
-</head>
-<body>
-  <script>
-    window.addEventListener('load', function(ev) {
-      // Download main.dart.js
-      _flutter.loader.loadEntrypoint({
-        serviceWorker: {
-          serviceWorkerVersion: serviceWorkerVersion,
-        }
-      }).then(function(engineInitializer) {
-        return engineInitializer.initializeEngine();
-      }).then(function(appRunner) {
-        return appRunner.runApp();
-      });
-    });
-  </script>
-</body>
-</html>
+			<div>
+				<p>Hex: <input size="8" maxlength="8" id="hex_input" type="text" onkeypress="enteredHex();" onchange="enteredHex();"></p>
+				<p>String: <input size="8" maxlength="8" id="string_input" type="text" onkeypress="pressed();" onchange="pressed();"></p>
+			</div>		
+        </div>
+        
+        
+        <div>
+			<canvas id="sierpinski" width="243" height="243">
+			</canvas>
+		</div>
+
+		<script type="text/javascript" src="sierpinski.js"></script>
+		<script type="text/javascript" src="changecolors.js"></script>
+		<script type="text/javascript" src="toolbar.js"></script>
+		<script type="text/javascript" src="favicon.js"></script>
+		<script type="text/javascript" src="input.js"></script>
+
+		<script type="text/javascript">
+			function enteredHex() {
+				let hexInput = document.getElementById("hex_input").value ;
+				console.log(hexInput) ;
+				let cdbbRearranged = rearrangeCddbString(hexInput) ;
+
+				setFromGrid(int32ToGrid(parseInt(cdbbRearranged, 16)));
+			}
+		</script>
+
+
+	</body></html>
